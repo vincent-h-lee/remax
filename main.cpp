@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <utility>
 #include <sstream>
+#include "records.h"
 
 using namespace std; 
 
@@ -18,6 +19,9 @@ int main()
 	//read csv 
 	//store first line as headings 
 	//change headings format 
+	Records records("2245EtonStreet.csv");
+	records.init(); 
+	records.output();
 	return 0;
 }
 
