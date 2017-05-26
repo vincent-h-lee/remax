@@ -12,7 +12,9 @@ public:
 		parseData(data);
 	}
 	void parseData(std::string& data); 
-	size_t find();
+	void removeAtIndex(std::vector<size_t> indices);
+	void replaceAtIndex(const size_t index, const std::string& text);
+	size_t findIndex(std::string data);
 	std::string withQuotes(const std::string& text);
 	void print(); 
 	void output();
