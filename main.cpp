@@ -8,11 +8,6 @@
 
 using namespace std; 
 
-typedef vector<string> Record;
-typedef vector<string> Headings; 
-typedef vector<Record> Records; 
-int readcsv(fstream file, Records& records);
-int readline(); 
 /**
  * Formats a csv file with correct styles for headings and phone numbers. 
  * Keeps only records where primary occupant and registered owner match. 
@@ -23,23 +18,8 @@ int main()
 	//read csv 
 	//store first line as headings 
 	//change headings format 
-	
+	return 0;
 }
-
-/**
- * Read in the csv 
- * store headings
- * store records 
- */
-int readcsv(fstream file, Records& records) {
-
-}
-
-int readline() {
-
-}
-
-
 
 /**
  * Change headings 
