@@ -5,19 +5,28 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 #include "data.h"
 
 class Records {
 public:
 	//Constructor
 	Records(const std::string filename) : filename_(filename){}
+
+	/*Initiation*/
 	void init();
 	int readcsv(); 
-	//int readline(const std::string& line, Data& data);
+	void changeHeadings(); 
+	void removeColumns(); 
+
+	/*Process*/
+	void process();
+	void extractNumbers(std::string& text); // map<string, vector<string>>
+	void removeInvalidFields(); //not available, not phone numbers
+	void format(); //phone numbers and store duplicates
+
+	/*Print*/
 	void print(Data& data); 
-	void printHeadings(); 
-	void printRecords(); 
-	void printAll();
 	void output();
 private: 
 	std::string 	   filename_;
