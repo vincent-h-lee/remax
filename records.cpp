@@ -1,7 +1,10 @@
 #include "records.h"
 
+/*Initiation methods */
 void Records::init() {
 	Records::readcsv();
+	Records::removeColumns();
+	Records::changeHeadings();
 }
 
 int Records::readcsv() {
@@ -24,24 +27,42 @@ int Records::readcsv() {
 	return 0; 
 }
 
-void Records::printHeadings() {
-	std::cerr << "Printing headings" << std::endl;
-	Records::print(headings_); 
-}
-
-void Records::printRecords() {
-	std::cerr << "Printing records" << std::endl;
-	for(auto it=records_.begin(); it!=records_.end(); ++it) {
-		Records::print(*it);
+void Records::changeHeadings() {
+	//rename
+	std::map<std::string, std::string> tochange; 
+	tochange["Civic Address"] = "Address"; 
+	tochange["Registered Owner"] = "Name";
+	tochange["Occupant Summary"] ="Phone";
+	for(auto it=tochange.begin(); it!=tochange.end(); ++it) {
+		if(headings_.findIndex(it->first) != (size_t)-1) {
+			headings_.replaceAtIndex(headings_.findIndex(it->first), headings_.withQuotes(it->second));
+		}
 	}
 }
 
-void Records::printAll() {
-	std::cerr << "Printing all" << std::endl; 
-	Records::printHeadings();
-	Records::printRecords();
+void Records::removeColumns() {
+	std::vector<size_t> indices; 
+	std::string toremove [] = {"Municipality", "Zone Code", "Zone Description"};
+	for(auto& str : toremove) {
+		indices.push_back(headings_.findIndex(str)); 
+	}
+	headings_.removeAtIndex(indices);	
+	for(auto it=records_.begin(); it!=records_.end(); ++it) {
+		(*it).removeAtIndex(indices);
+	}
 }
 
+/*Process methods*/
+void Records::process() {
+	Records::removeInvalidFields(); //not available, not phone numbers
+	Records::format(); //phone numbers and store duplicates
+}
+
+void Records::extractNumbers(std::string& text); // map<string, vector<string>>
+void Records::removeInvalidFields(); //not available, not phone numbers
+void Records::format(); //phone numbers and store duplicates
+
+/*Print methods*/
 void Records::output() {
 	headings_.output(); 
 	for(auto it=records_.begin(); it!=records_.end(); ++it) {
