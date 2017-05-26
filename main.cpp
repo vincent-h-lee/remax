@@ -19,7 +19,7 @@ int main()
 	//read csv 
 	//store first line as headings 
 	//change headings format 
-	Records records("2245EtonStreet.csv");
+	Records records("28PowellStreet.csv");
 	records.init(); 
 	records.output();
 	return 0;
