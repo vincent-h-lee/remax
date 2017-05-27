@@ -54,13 +54,21 @@ void Records::removeColumns() {
 
 /*Process methods*/
 void Records::process() {
-	Records::removeInvalidFields(); //not available, not phone numbers
-	Records::format(); //phone numbers and store duplicates
+	auto nameindex = headings_.findIndex("Name"); 
+	auto phoneindex = headings_.findIndex("Phone");
+	std::vector<Data> Records::IsValidField::duplicates; //instantiate static variable 
+	records_.erase(remove_if(records_.begin(), records_.end(), IsValidField(nameindex, phoneindex))
+		,records_.end());
+	for(auto it=Records::IsValidField::duplicates.begin(); it!=Records::IsValidField::duplicates.end(); ++it) {
+		records_.push_back(*it); 
+	}
 }
 
-void Records::extractNumbers(std::string& text); // map<string, vector<string>>
-void Records::removeInvalidFields(); //not available, not phone numbers
-void Records::format(); //phone numbers and store duplicates
+
+	//if there is a comma -- first and last name 
+	//else just a company name 
+
+bool Records::IsValidField::compareNameAndPhonebook(std::vector<std::string> names, std::string phonebookname);
 
 /*Print methods*/
 void Records::output() {
