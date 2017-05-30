@@ -6,8 +6,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <map>
 #include <sstream>
+#include <locale>
+#include <map>
 #include "data.h"
 
 class Records {
@@ -24,26 +25,36 @@ public:
 	
 	/*Process*/
 	void process();
-	
+
 	struct IsValidField {
 	public:
 		static std::vector<Data> duplicates; 
 
 		IsValidField(const size_t nameindex, const size_t phoneindex):nameindex_(nameindex), phoneindex_(phoneindex) {}
 		bool operator()(Data& record) {
-			auto phonebook = Records::getPhonebook(record.getAtIndex(phoneindex_));
-			auto names = Records::getNames(record.getAtIndex(nameindex_));
+			std::vector<std::string> phonecounter; //keep track of multiple phone numbers per one individual
+
 			bool found = false; 
-			for(auto it=phonebook.begin(); it!=phonebook.end(); ++it) { //TODO change this to iterator and pass in key not value
+			if(record.getAtIndex(phoneindex_) == "n/a" || record.getAtIndex(phoneindex_) == record.withQuotes("n/a")) {
+				return !found;
+			}
+
+			auto phonebook = record.getPhonebook(phoneindex_);
+			auto names = record.getNames(nameindex_);
+			for(auto it=phonebook.begin(); it!=phonebook.end(); ++it) {
 				if(compareNameAndPhonebook(names, it->first)) {
 					if(!found) {
-						//record[phoneindex_] = format(phonebook[i]);
+						record.formatphone(phoneindex_, it->second);
+						phonecounter.push_back(record.getAtIndex(phoneindex_));
 						found = true;
 					} else {
 						//push to duplicates
-						//Data temp(record); 
-						//temp[phoneindex_] = format(phonebook[i])
-						//duplicates.push(temp);
+						Data temp(record); 
+						temp.formatphone(phoneindex_, it->second);
+						if(std::find(phonecounter.begin(), phonecounter.end(), temp.getAtIndex(phoneindex_)) == phonecounter.end()) {
+							phonecounter.push_back(record.getAtIndex(phoneindex_));
+							duplicates.push_back(temp);
+						}
 					}
 				}
 			}
@@ -58,6 +69,7 @@ public:
 	/*Print*/
 	void print(Data& data); 
 	void output();
+	 
 private: 
 	std::string 	   filename_;
 	Data		   	   headings_;

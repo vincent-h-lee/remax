@@ -1,5 +1,7 @@
 #include "records.h"
 
+std::vector<Data> Records::IsValidField::duplicates; //instantiate static variable 
+
 /*Initiation methods */
 void Records::init() {
 	Records::readcsv();
@@ -56,7 +58,7 @@ void Records::removeColumns() {
 void Records::process() {
 	auto nameindex = headings_.findIndex("Name"); 
 	auto phoneindex = headings_.findIndex("Phone");
-	std::vector<Data> Records::IsValidField::duplicates; //instantiate static variable 
+	Records::IsValidField::duplicates.clear(); 
 	records_.erase(remove_if(records_.begin(), records_.end(), IsValidField(nameindex, phoneindex))
 		,records_.end());
 	for(auto it=Records::IsValidField::duplicates.begin(); it!=Records::IsValidField::duplicates.end(); ++it) {
@@ -65,10 +67,24 @@ void Records::process() {
 }
 
 
-	//if there is a comma -- first and last name 
-	//else just a company name 
-
-bool Records::IsValidField::compareNameAndPhonebook(std::vector<std::string> names, std::string phonebookname);
+bool Records::IsValidField::compareNameAndPhonebook(std::vector<std::string> names, std::string phonebookname) {
+	//process phonebook name into strings
+	std::istringstream iss(phonebookname);
+	std::string temp; 
+	std::vector<std::string> v;
+	while(iss>>temp) {
+		v.push_back(temp);
+	}
+	for(auto& name:names) {
+		std::string nameupper(name);
+		std::transform(nameupper.begin(), nameupper.end(), nameupper.begin(),
+                   [](unsigned char c) { return std::toupper(c); });
+		if(std::find(v.begin(), v.end(), nameupper) != v.end()) {
+			return true; 
+		}
+	}
+	return false;
+}
 
 /*Print methods*/
 void Records::output() {
