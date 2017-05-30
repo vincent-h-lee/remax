@@ -60,42 +60,63 @@ std::string Data::withQuotes(const std::string& text) {
 	return '"' + text + '"';
 }
 
-std::map<std::string, std::string> Data::getPhonebook(std::string& list) {
+std::map<std::string, std::string> Data::getPhonebook(const size_t index) {
 	std::string nametoken = ""; 
 	std::string phonetoken = "";
 	bool onname = true; 
 	std::map<std::string, std::string> phonebook; 
-	std::string fixlist = list; //TODO remove the quotations if they exist 
-	for(auto& ch:fixlist) {
+	std::string fixlist = data_[index]; //TODO remove the quotations if they exist 
+	for(auto it=fixlist.begin()+1; it!=fixlist.end()-1; ++it) {
 		if(onname) {
-			if(ch == ':') {
+			if((*it) == ':') {
 				onname = false;
 			} else {
-				nametoken+=ch; 
+				nametoken+=std::toupper(*it); 
 			}
 		} else {
-			if(ch == ';') {
+			if((*it) == ';') {
 				onname = true; 
+				//trim whitespace and tokens
 				phonebook[nametoken] = phonetoken; //TODO Trim whitespace
 				nametoken = "";
 				phonetoken = ""; 
 			} else {
-				phonetoken+=ch; 
+				phonetoken+=(*it); 
 			}
 		}
 	}
+	phonebook[nametoken] = phonetoken; 
 	return phonebook; 
 }
 
-std::vector<std::string> Data::getNames(std::string& name) {
+std::vector<std::string> Data::getNames(const size_t index) {
 	std::vector<std::string> names; 
-	std::istringstream iss(name); 
+	std::istringstream iss(data_[index]); 
 	std::string temp;
 	while(iss >> temp) {
+		if(temp.find('"') != std::string::npos) {
+			temp.erase(temp.find('"'), 1);
+		}
+		if(temp.find(',') != std::string::npos) {
+			temp.erase(temp.find(','), 1);
+		}
+
 		names.push_back(temp); 
 		temp = "";
 	}
 	return names;
+}
+
+
+void Data::formatphone(const size_t index, std::string number) {
+	std::string phone;
+	std::istringstream iss(number); 
+	iss>>phone; 
+	if(!iss) {
+		std::cerr << "Err c.Data.f.formatphone: no valid phone number" << std::endl;
+	}
+	data_[index] = withQuotes(phone);
+	
 }
 
 /* Output */
