@@ -15,10 +15,6 @@ using namespace std;
  */
 int main(int argc, char* argv[]) 
 {
-	//check if can open file 
-	//read csv 
-	//store first line as headings 
-	//change headings format 
 	cerr << argc << endl;
 	Records records(argv[1]);
 	records.init(); //read, remove cols, change headings
@@ -26,22 +22,3 @@ int main(int argc, char* argv[])
 	records.output();
 	return 0;
 }
-
-/**
- * Extract names and phone numbers from "Phone" field 
- */
-
-/**
- * Compare registered owner to names in phone field.
- * Delete records where they do not match. 
- */ 
-
-/**
- * Edit records to have phone numbers only.
- * Where a record has multiple name matches with different phone numbers, 
- * store as a duplicate record. 
- */ 
-
-/**
- * 
- */ 
